@@ -90,6 +90,26 @@ def 'test not ok' [] {
 }
 
 #[test]
+def 'test ok equal' [] {
+    let input = 'value'
+    let expected = 'value'
+    return {
+        name: 'test ok equal'
+        result:( unit assert equal $input $expected)
+    }
+}
+
+def 'test not ok equal' [] {
+    let input = 'value'
+    let expected = 'wrong'
+    return {
+        name: 'test not ok equal'
+        result: ( unit assert equal $input $expected  )
+    }
+}
+
+
+#[test]
 def 'test url parse' [] {
     let input = "https://i.natgeofe.com/n/ffe12b1d-8191-44ec-bfb9-298e0dd29825/NationalGeographic_2745739.jpg"
     let expected = "NationalGeographic_2745739.jpg"
@@ -136,7 +156,16 @@ def 'test after all' [] {
 
 
 
-let tests = [ (test ok) (test not ok) (test url parse) (test ok) (test bing url parse) ]
+let tests = [
+
+(test ok)
+(test not ok)
+(test ok equal)
+(test not ok equal)
+(test url parse)
+(test bing url parse)
+
+]
 
 
 
