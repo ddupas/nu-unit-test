@@ -110,46 +110,28 @@ def 'test not ok equal' [] {
     }
 }
 
-
-#[test]
-def 'test url parse' [] {
-    let input = "https://i.natgeofe.com/n/ffe12b1d-8191-44ec-bfb9-298e0dd29825/NationalGeographic_2745739.jpg"
-    let expected = "NationalGeographic_2745739.jpg"
-    return {
-        name: 'test url parse'
-        result: ( unit assert equal ($input | url parse filename) $expected )
-    }
-}
-
-#[test]
-def 'test bing url parse' [] {
-    let input = "http://bing.com/th?id=OHR.CorfuBeach_EN-US1955770867_1920x1080.jpg&rf=LaDigue_1920xs1080.jpg&pid=hp"
-    let expected = "OHR.CorfuBeach_EN-US1955770867_1920x1080.jpg"
-    return {
-        name: 'test bing url parse'
-        result: ( unit assert equal ($input | bing url parse filename) $expected )
-    }
-}
-
-
+# CALLBACK
 # runs once at the start of test run
 def 'test before all' [] {
     'insert set up before all' | print
     ()
 }
 
+# CALLBACK
 # gets called every test
 def 'test before each' [] {
     'insert set up before each' | print
     ()
 }
 
+# CALLBACK
 # tear down code after each test
 def 'test after each' [] {
     'insert tear down after each' | print
     ()
 }
 
+# CALLBACK
 # tear down code after last test
 def 'test after all' [] {
     'insert tear down after all' | print
@@ -157,21 +139,15 @@ def 'test after all' [] {
 }
 
 
+# this is the main export of this module!
+# it accepts a list of functions to test right now
+#
+# TODO: provide means of injecting the 4 CALLBACKS
+#
+# TODO: study execution context, if there is such a thing env likely
+#
 
-let tests = [
-
-(test ok)
-(test not ok)
-(test ok equal)
-(test not ok equal)
-(test url parse)
-(test bing url parse)
-
-]
-
-
-
-export def 'test run' [] {
+export def 'test run' [tests:list<any>] {  #-> list<any>
     test before all
     let results = ( $tests | each {|test|
         test before each
@@ -188,8 +164,21 @@ export def 'test run' [] {
    $results
 }
 
-def 'show results' [] {
-        let results = ( test run )
+
+
+let selftests = [
+
+(test ok)
+(test not ok)
+(test ok equal)
+(test not ok equal)
+
+]
+
+
+
+def 'show selftest results' [] {
+        let results = ( test run $selftests )
         '
 ======== test results =========' | print
         $results
@@ -210,9 +199,21 @@ def 'show results' [] {
 }
 
 export def main [] {
+    'usage:
 
-show results
-#unit assert ( true ) | describe
+    use nu-unit-test 'test run'
 
+    test1
 
+    test2
+
+    tests = [ test1 test2 ]
+
+    test run $tests
+
+    ` | print
+
+    # this is a module but it can test itself with itself
+
+    show selftest results
 }
