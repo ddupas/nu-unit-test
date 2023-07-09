@@ -199,21 +199,8 @@ def 'show selftest results' [] {
 }
 
 export def main [] {
-    'usage:
-
-    use nu-unit-test 'test run'
-
-    test1
-
-    test2
-
-    tests = [ test1 test2 ]
-
-    test run $tests
-
-    ` | print
-
-    # this is a module but it can test itself with itself
+'
+====== this is a module but we can test it with itself by executing main  =========' | print
 
     show selftest results
 }
