@@ -82,6 +82,7 @@ def 'test ok' [] {
     }
 }
 
+#[test]
 def 'test not ok' [] {
     return {
         name: 'test not ok'
@@ -99,6 +100,7 @@ def 'test ok equal' [] {
     }
 }
 
+#[test]
 def 'test not ok equal' [] {
     let input = 'value'
     let expected = 'wrong'
