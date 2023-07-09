@@ -10,7 +10,7 @@
 #
 # unit assert, test a condition and report the result
 #
-def 'unit assert' [
+export def 'unit assert' [
     condition: bool, # Condition, which should be true
     message?: string, # Optional error message
     --error-label: record # Label for custom assert
@@ -43,7 +43,7 @@ def 'unit assert' [
 #
 # unit assert $left == $right
 #
-def 'unit assert equal' [left: any, right: any, message?: string] {
+export def 'unit assert equal' [left: any, right: any, message?: string] {
     unit assert ($left == $right) $message --error-label {
         start: (metadata $left).span.start
         end: (metadata $right).span.end
@@ -165,8 +165,8 @@ export def 'test run' [tests:list<any>] {  #-> list<any>
 }
 
 
-
-let selftests = [
+def 'show selftest results' [] {
+        let selftests = [
 
 (test ok)
 (test not ok)
@@ -174,10 +174,6 @@ let selftests = [
 (test not ok equal)
 
 ]
-
-
-
-def 'show selftest results' [] {
         let results = ( test run $selftests )
         '
 ======== test results =========' | print

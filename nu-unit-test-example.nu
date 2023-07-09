@@ -4,7 +4,7 @@
 #
 #
 
-use nu-unit-test 'test run'
+use nu-unit-test.nu *
 
 ### test subjects
 
@@ -40,5 +40,29 @@ def 'test bing url parse' [] {
     }
 }
 
-tests = [ (test url parse) (test bing url parse) ]
-test run $tests
+
+let example_tests = [ (test url parse) (test bing url parse) ]
+
+def 'show example test results' [] {
+        let results = ( test run $example_tests )
+        '
+======== test results =========' | print
+        $results
+            | each { |result|
+            '
+======== test =========' | print
+            print  $result.name
+            $result.result
+                | each { |r|
+                    print $r.msg
+                    $r.label
+                        | each { |l|
+                            print $l
+                        }
+                }
+    }
+    ()
+}
+
+show example test results
+
