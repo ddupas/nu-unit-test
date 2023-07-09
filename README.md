@@ -22,3 +22,5 @@ after all
 ```
 
 that allows for setup and teardown of a test session and each test
+
+TODO: target output formats compatable with junit test runners
