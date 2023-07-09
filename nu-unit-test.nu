@@ -14,6 +14,7 @@ def 'unit assert' [
     condition: bool, # Condition, which should be true
     message?: string, # Optional error message
     --error-label: record # Label for custom assert
+    --success-label: record
 ] {
 
     let span = (metadata $condition).span
@@ -21,7 +22,7 @@ def 'unit assert' [
     if $condition {
      return {
         msg: ($message | default "Assertion passed."),
-        label: ($error_label | default {
+        label: ($success_label | default {
             text: "It is true.",
             start: $span.start,
             end: $span.end
@@ -47,6 +48,10 @@ def 'unit assert equal' [left: any, right: any, message?: string] {
         start: (metadata $left).span.start
         end: (metadata $right).span.end
         text: $"They are not equal. Left = '($left)'. Right = '($right)'."
+    } --success-label {
+        start: (metadata $left).span.start
+        end: (metadata $right).span.end
+        text: $"They are equal. Left = '($left)'. Right = '($right)'."
     }
 }
 
@@ -70,16 +75,23 @@ def "bing url parse filename" [] {  # -> string
 #### some tests
 
 #[test]
-def ok [] {
+def 'test ok' [] {
     return {
-        name: 'ok'
+        name: 'test ok'
         result: ( unit assert (0 == 0)  )
+    }
+}
+
+def 'test not ok' [] {
+    return {
+        name: 'test not ok'
+        result: ( unit assert (1 == 0)  )
     }
 }
 
 #[test]
 def 'test url parse' [] {
-    let input = "https://i.natgeofe.com/n/ffe12b1d-8191-44ec-bfb9-298e0dd29825/xxxxxNationalGeographic_2745739.jpg"
+    let input = "https://i.natgeofe.com/n/ffe12b1d-8191-44ec-bfb9-298e0dd29825/NationalGeographic_2745739.jpg"
     let expected = "NationalGeographic_2745739.jpg"
     return {
         name: 'test url parse'
@@ -90,7 +102,7 @@ def 'test url parse' [] {
 #[test]
 def 'test bing url parse' [] {
     let input = "http://bing.com/th?id=OHR.CorfuBeach_EN-US1955770867_1920x1080.jpg&rf=LaDigue_1920xs1080.jpg&pid=hp"
-    let expected = "OHR.xxxxxCorfuBeach_EN-US1955770867_1920x1080.jpg"
+    let expected = "OHR.CorfuBeach_EN-US1955770867_1920x1080.jpg"
     return {
         name: 'test bing url parse'
         result: ( unit assert equal ($input | bing url parse filename) $expected )
@@ -124,7 +136,7 @@ def 'test after all' [] {
 
 
 
-let tests = [  (test url parse) (ok) (test bing url parse) ]
+let tests = [ (test ok) (test not ok) (test url parse) (test ok) (test bing url parse) ]
 
 
 
