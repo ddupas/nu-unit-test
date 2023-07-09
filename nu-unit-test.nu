@@ -148,13 +148,15 @@ export def 'test run' [] {
 def 'show results' [] {
         let results = ( test run )
         '
-======== test results =========
-        ' | print
+======== test results =========' | print
         $results
             | each { |result|
-            print $result.name
+            '
+======== test =========' | print
+            print  $result.name
             $result.result
                 | each { |r|
+                    print $r.msg
                     $r.label
                         | each { |l|
                             print $l
