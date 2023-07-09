@@ -56,22 +56,6 @@ export def 'unit assert equal' [left: any, right: any, message?: string] {
 }
 
 
-
-
-### test subjects
-
-#[test subject]
-def "url parse filename" [] {  # -> string
-    url parse | get path | path parse | update parent "" | path join
-}
-
-#[test subject]
-def "bing url parse filename" [] {  # -> string
-    url parse | get params.id
-}
-
-
-
 #### some tests
 
 #[test]
