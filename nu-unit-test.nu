@@ -15,8 +15,20 @@ def 'unit assert' [
     message?: string, # Optional error message
     --error-label: record # Label for custom assert
 ] {
-    if $condition { return }
+
     let span = (metadata $condition).span
+
+    if $condition {
+     return {
+        msg: ($message | default "Assertion passed."),
+        label: ($error_label | default {
+            text: "It is true.",
+            start: $span.start,
+            end: $span.end
+        })
+    }
+    }
+
     return {
         msg: ($message | default "Assertion failed."),
         label: ($error_label | default {
@@ -56,6 +68,14 @@ def "bing url parse filename" [] {  # -> string
 
 
 #### some tests
+
+#[test]
+def ok [] {
+    return {
+        name: 'ok'
+        result: ( unit assert (0 == 0)  )
+    }
+}
 
 #[test]
 def 'test url parse' [] {
@@ -102,20 +122,27 @@ def 'test after all' [] {
     ()
 }
 
-let tests = [ (test url parse) (test bing url parse) ]
+
+
+let tests = [  (test url parse) (ok) (test bing url parse) ]
+
+
 
 export def 'test run' [] {
-    let results = [ ]
     test before all
-    let result = ( $tests | each {|test|
+    let results = ( $tests | each {|test|
         test before each
-            let r = ($test)
+
+            let r = ( $test )
+
+            print $r.name
+
         test after each
         $r
        }
     )
    test after all
-   $result
+   $results
 }
 
 def 'show results' [] {
@@ -139,5 +166,8 @@ def 'show results' [] {
 
 export def main [] {
 
-    show results
+show results
+#unit assert ( true ) | describe
+
+
 }
